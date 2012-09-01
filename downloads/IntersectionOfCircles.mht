@@ -1,0 +1,278 @@
+Content-Type: multipart/related; start=<op.mhtml.1346073124267.3dbb9b600e49ffbc@66.44.225.62>; boundary=----------PiHOqpb7R9ZmToJoOCLBnx
+Content-Location: http://paulbourke.net/geometry/2circle/
+Subject: =?utf-8?Q?Intersection=20of=20two=20circles?=
+MIME-Version: 1.0
+
+------------PiHOqpb7R9ZmToJoOCLBnx
+Content-Disposition: inline; filename=default.htm
+Content-Type: text/html; name=default.htm
+Content-ID: <op.mhtml.1346073124267.3dbb9b600e49ffbc@66.44.225.62>
+Content-Location: http://paulbourke.net/geometry/2circle/
+Content-Transfer-Encoding: 8bit
+
+<html>
+<head>
+<link rel=StyleSheet href="../../pdbstyle.css" type="text/css" media=all>
+<title>Intersection of two circles</title>
+</head>
+<body bgcolor="#ffffff">
+
+<center>
+<h1>Intersection of two circles</h1>
+Written by <a href="../">Paul Bourke</a><br>
+April 1997<p>
+Contributions:<br><a href="tvoght.c">C source code example</a> by Tim Voght.<br>
+<a href="CircleCircleIntersection2.m">Objective C method</a> by Daniel Quirk.
+</center>
+
+<p><hr><p>
+
+<p align="justify">
+The following note describes how to find the intersection point(s) between
+two circles on a plane, the following notation is used. The
+aim is to find the two points P<sub>3</sub> = (x<sub>3</sub>, y<sub>3</sub>) if they exist.
+</p>
+
+<p><center><img src="2circle1.gif"><p></center>
+
+<p align="justify">
+First calculate the distance d between the center of the circles.
+d = ||P<sub>1</sub> - P<sub>0</sub>||.
+</p>
+<ul>
+<li>If d > r<sub>0</sub> + 
+r<sub>1</sub> then there are no solutions, the circles are 
+separate.
+<p>
+<li>If d < |r<sub>0</sub> - r<sub>1</sub>|
+then there are no solutions because one circle is contained 
+within the other.<p>
+<li>If d = 0 and r<sub>0</sub> = r<sub>1</sub>
+then the circles are coincident and there are an infinite
+number of solutions.<p>
+</ul>
+
+Considering the two triangles 
+P<sub>0</sub>P<sub>2</sub>P<sub>3</sub> and
+P<sub>1</sub>P<sub>2</sub>P<sub>3</sub> we can write
+<p>
+<center>
+a<sup>2</sup> + h<sup>2</sup> = 
+r<sub>0</sub><sup>2</sup> and b<sup>2</sup> + h<sup>2</sup> = 
+r<sub>1</sub><sup>2</sup>
+</center>
+<p>
+Using d = a + b we can solve for a,<p>
+<center>
+a = (r<sub>0</sub><sup>2</sup> - r<sub>1</sub><sup>2</sup> + 
+d<sup>2</sup> ) / (2 d)
+<p>
+</center><p>
+
+<p align="justify">
+It can be readily shown that this reduces to r<sub>0</sub> when
+the two circles touch at one point, ie: 
+d = r<sub>0</sub> + r<sub>1</sub>
+</p>
+
+<p align="justify">
+Solve for h by substituting a into the first equation, 
+h<sup>2</sup> = r<sub>0</sub><sup>2</sup> - a<sup>2</sup>
+</p>
+
+So 
+<p><center>
+P<sub>2</sub> = P<sub>0</sub> +
+a ( P<sub>1</sub> - P<sub>0</sub> ) / d
+</center><p>
+And finally, P<sub>3</sub> = (x<sub>3</sub>,y<sub>3</sub>) 
+in terms of P<sub>0</sub> = (x<sub>0</sub>,y<sub>0</sub>),
+P<sub>1</sub> = (x<sub>1</sub>,y<sub>1</sub>)
+and P<sub>2</sub> = (x<sub>2</sub>,y<sub>2</sub>),
+is 
+<p><center>
+x<sub>3</sub> = x<sub>2</sub> +-
+h ( y<sub>1</sub> - y<sub>0</sub> ) / d
+<p>
+y<sub>3</sub> = y<sub>2</sub> -+
+h ( x<sub>1</sub> - x<sub>0</sub> ) / d
+<p></center>
+<p>
+
+</body>
+</html>
+
+------------PiHOqpb7R9ZmToJoOCLBnx
+Content-Disposition: inline; filename=pdbstyle.css
+Content-Type: text/css; name=pdbstyle.css
+Content-Location: http://paulbourke.net/pdbstyle.css
+Content-Transfer-Encoding: 8bit
+
+/*
+	Don't set font sizes, leave that up to the user
+*/
+
+a, dd, td, li, ul, dd, dl { 
+	/* font-family: Times, serif; */
+	font-style: normal; 
+	font-weight: normal; 
+	line-height: 150%; 
+	text-indent: 0em;
+}
+
+p {
+   font-style: normal;
+   font-weight: normal;
+   line-height: 150%;
+   text-indent: 0em;
+	/*text-align: justify; */
+}
+
+A:link {text-decoration: none; color: #0000aa;}
+A:visited {text-decoration: none; color: #007733;}
+A:active {text-decoration: none; color: #0000aa;}
+A:hover {text-decoration: none; color: #aa0000;}
+
+body { 
+	/* background-color: white */
+	margin-top: 30px;
+	margin-bottom: 100px;
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+blockquote {
+	padding-top: 15px;
+	padding-bottom: 15px;
+   line-height: 130%;
+   font-family: Times, serif;
+   color: #550000;
+}
+
+pre, code {
+	line-height: 120%;
+	font-family: Courier, monospace;
+	font-size: small;
+	color: #000000;
+}
+
+H1 { 
+	line-height: 125%;
+	color: #000000; 
+	font-family: serif; 
+	letter-spacing: 0.2em;
+	font-size: x-large;
+}
+
+H2 {                    
+   color: #000000;
+   font-family: serif;
+	letter-spacing: 0.1em;
+	font-size: large;
+}
+
+H3 {                    
+   color: #000000;
+	letter-spacing: 0.1em;
+   font-family: serif;
+	font-size: large;
+}
+
+H4 {
+	font-size: medium;
+}
+
+H5 {
+   font-size: medium;
+}
+
+H6 {
+   font-size: normal;
+	font-weight: bold;
+}
+
+
+------------PiHOqpb7R9ZmToJoOCLBnx
+Content-Disposition: inline; filename=2circle1.gif
+Content-Type: image/gif; name=2circle1.gif
+Content-Location: http://paulbourke.net/geometry/2circle/2circle1.gif
+Content-Transfer-Encoding: Base64
+
+R0lGODdhjwEwAfcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//M
+AP+Z//+ZzP+Zmf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8z
+Zv8zM/8zAP8A//8AzP8Amf8AZv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zM
+zMzMmczMZszMM8zMAMyZ/8yZzMyZmcyZZsyZM8yZAMxm/8xmzMxmmcxmZsxmM8xm
+AMwz/8wzzMwzmcwzZswzM8wzAMwA/8wAzMwAmcwAZswAM8wAAJn//5n/zJn/mZn/
+Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm/5lm
+zJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kA
+AGb//2b/zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZ
+ZmaZM2aZAGZm/2ZmzGZmmWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YA
+zGYAmWYAZmYAM2YAADP//zP/zDP/mTP/ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPM
+ADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNmMzNmADMz/zMzzDMzmTMz
+ZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/AADM/wDM
+zADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBm
+AAAz/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAM+4AAN0AALsAAKoAAIgA
+AHcAAFUAAEQAACIAABEAAADuAADdAAC7AACqAACIAAB3AABVAABEAAAiAAARAAAA
+7gAA3QAAuwAAqgAAiAAAdwAAVQAARAAAIgAAEe7u7t3d3bu7u6qqqoiIiHd3d1VV
+VURERCIiIhEREQAAACwAAAAAjwEwAQAI/wABCBxIsKDBgwgTKlzIsKHDhxAjSpxI
+saLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlzBjypxJs6bNmzhz6tzJs6fP
+n0CDCh1KtKjRo0iTKl3KtKnTp1CjSg36r6rVq1ivTt3KtevIrP8mgvVKtqzZg1hD
+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
+kzRZkzZ5kzgKmZM6uZM8iYEBAQA7
+
+------------PiHOqpb7R9ZmToJoOCLBnx--

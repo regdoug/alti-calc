@@ -1,0 +1,47 @@
+<!--
+   AltiCalcCanvas.html
+   
+   Copyright 2012 Connor D Pierce <conpierce8@gmail.com>
+   
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   
+   
+-->
+
+<html lang="en">
+<head>
+    <script type='text/javascript' src='AltiCalcDraw.js'></script>
+    <style type='text/css'>
+        body {
+            background: black;
+        }
+        
+        canvas {
+            outline: 2px solid white;
+        }
+    </style>
+</head>
+
+<body>
+	<canvas id='mycanvas' width='500' height='300'></canvas><br/>
+    <script type='text/javascript'>
+        drawCones(document.getElementById('mycanvas'));
+    </script>
+    <button id='draw' onclick='drawCones(document.getElementById("mycanvas"),50, 78, 82, 91)'>Draw Cones</button><br/>
+    <button id='undraw' onclick='undrawCones(document.getElementById("mycanvas"))'>Undraw Cones</button>
+</body>
+
+</html>

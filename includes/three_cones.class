@@ -1,0 +1,130 @@
+<?php
+class ThreeConeSolver{
+
+    protected $d_ft;
+    protected $th1_rad;
+    protected $th2_rad;
+    protected $th3_rad;
+    protected $tan1;
+    protected $tan2;
+    protected $tan3;
+    protected $z_ft;
+    public $status = 0;
+    const epsilon = 2;
+    
+    protected static function _radii_valid($r1,$d1_2,$r2,$d2_3,$r3,$d3_1){
+        // It is possible for 1 & 2 to intersect
+        $flag1_2 = ($r1 + $r2 >= $d1_2) && ($r1 - $d1_2 <= $r2) && ($r2 - $d1_2 <= $r1);
+        // It is possible for 2 & 3 to intersect
+        $flag2_3 = ($r2 + $r3 >= $d2_3) && ($r2 - $d2_3 <= $r3) && ($r3 - $d2_3 <= $r2);
+        // It is possible for 3 & 1 to intersect
+        $flag3_1 = ($r3 + $r1 >= $d3_1) && ($r3 - $d3_1 <= $r1) && ($r1 - $d3_1 <= $r3);
+        return $flag1_2 && $flag2_3 && $flag3_1;
+    }
+    
+    static function statusString($status){
+        switch($status){
+            case 0: return 'Incomplete';
+            case 100: return 'Bad Input';
+            case 200: return 'Success';
+            case 401: return 'Bad Guess -- Too Low';
+            case 402: return 'Bad Guess -- Too High';
+            case 404: return 'No Intersection';
+        }
+    }
+    
+    function __get($var){
+        switch($var){
+            case 'd_ft': return $this->d_ft;
+            case 'd': return $this->d_ft;
+            case 'z_ft': return $this->z_ft;
+            case 'z': return $this->z_ft;
+            case 'r1_ft': return $this->z_ft * $this->tan1;
+            case 'r1': return $this->z_ft * $this->tan1;
+            case 'r2_ft': return $this->z_ft * $this->tan2;
+            case 'r2': return $this->z_ft * $this->tan2;
+            case 'r3_ft': return $this->z_ft * $this->tan3;
+            case 'r3': return $this->z_ft * $this->tan3;
+            case 'message':return ThreeConeSolver::statusString($this->status);
+        }
+    }
+    
+    /*
+     *    1      2      3
+     *    *<---->*<---->*
+     *       d      d
+     */
+
+    function solve($d_ft, $theta1_deg, $theta2_deg, $theta3_deg, $guess_low_ft = 0, $guess_hi_ft = 1500){
+        $this->d_ft = $d_ft;
+        $this->th1_rad = deg2rad(90 - $theta1_deg);
+        $this->tan1 = tan($this->th1_rad);
+        $this->th2_rad = deg2rad(90 - $theta2_deg);
+        $this->tan2 = tan($this->th2_rad);
+        $this->th3_rad = deg2rad(90 - $theta3_deg);
+        $this->tan3 = tan($this->th3_rad);
+        $this->z_ft = $this->_solveRecursive($guess_hi_ft, 0.5*($guess_hi_ft*$guess_low_ft), $guess_low_ft);
+        if($this->z_ft < 0){
+            $this->status = 404;
+        }else if($this->z_ft < ($guess_low_ft + 2*$this::epsilon)){
+            $this->status = 402;
+        }else if($this->z_ft > ($guess_hi_ft - 2*$this::epsilon)){
+            $this->status = 401;
+        }else{
+            $this->status = 200;
+        }
+        return $this->status;
+    }
+    
+    function ok(){
+        return $this->status == 200;
+    }
+    
+    protected function _solveRecursive($h_ft, $l_ft){
+        $epsilon = $h_ft - $l_ft;
+        $m_ft = 0.5*($h_ft+$l_ft);
+        //print sprintf("Loop %d,%d,%d :",$h_ft,$m_ft,$l_ft);
+        if($epsilon < $this::epsilon) return $m_ft;
+        
+        //calculate radii
+        $r1_ft = $m_ft * $this->tan1;
+        $r2_ft = $m_ft * $this->tan2;
+        $r3_ft = $m_ft * $this->tan3;
+        
+        //print "about to validate ";
+        $d1_2 = $d2_3 = $this->d_ft;
+        $d3_1 = $this->d_ft * 2;
+        /*
+        print sprintf(" validating %d,%d,%d for %d,%d,%d \n\t",$r1_ft,$r2_ft,$r3_ft,$d1_2,$d2_3,$d3_1);
+        */
+        $valid = ThreeConeSolver::_radii_valid($r1_ft,$d1_2,$r2_ft,$d2_3,$r3_ft,$d3_1);
+        //validate radii
+        if(!$valid){
+            //print sprintf("  Invalid radius %d,%d,%d\n",$r1_ft, $r2_ft, $r3_ft);
+            if($epsilon > 2*$this::epsilon){
+                return $this->_solveRecursive($h_ft, $m_ft);
+            }else{
+                return -1;
+            }
+        }
+        
+        //calculate intersections
+        $xout = $this->_a($r1_ft, $r3_ft, 2*$this->d_ft) - $this->d_ft;
+        $xin = -$this->_a($r2_ft, $r1_ft, $this->d_ft);
+        $diff = $xin-$xout;
+        
+        //print sprintf("  r1: %d, r2: %d, r3: %d, xout: %d, xin: %d, diff: %f\n",$r1_ft,$r2_ft,$r3_ft,$xout,$xin,$diff);
+        
+        if($diff < 0){
+            return $this->_solveRecursive($h_ft, $m_ft);
+        }else{
+            return $this->_solveRecursive($m_ft, $l_ft);
+        }
+        
+    }
+    
+    protected function _a($r0, $r1, $d){
+        return ($r0*$r0 - $r1*$r1 + $d*$d)/(2*$d);
+    }
+    
+}
