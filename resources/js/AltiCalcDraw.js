@@ -6,7 +6,7 @@ function drawCones(canvas, d, r1, r2, r3) {
     //graphics.fillStyle = '#FFFFFF';
     //graphics.fillRect(0,0,canvasWidth,canvasHeight);
     
-    var widthOfContents = 2*d + r1 + r3 + 10; //in feet (since dist and radius
+    var widthOfContents = 2*d + r1 + r3; //in feet (since dist and radius
                                               //are given in feet)
     var horizScale = canvasWidth / widthOfContents; //in feet per pixel
     
@@ -15,10 +15,11 @@ function drawCones(canvas, d, r1, r2, r3) {
     //alert('width of contents: '+widthOfContents+'\nhorizScale='+horizScale+'\nht of contents: '+heightOfContents+'\nvertiScale='+vertiScale);
     
     var scale = Math.min(horizScale, vertiScale); //I think I want min here
+    var xPadWidth = (canvasWidth - (scale*widthOfContents))/2;
     
     //Draw the cones
     graphics.globalAlpha = 0.5
-    var x = r1*scale+5;
+    var x = r1*scale+xPadWidth;
     var gradient = graphics.createRadialGradient(x, 150, 0, x, 150, r1*scale);
     gradient.addColorStop(0, '#FFFFFF');
     gradient.addColorStop(1, '#FF0000');
