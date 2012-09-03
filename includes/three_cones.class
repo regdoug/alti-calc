@@ -45,7 +45,7 @@ class ThreeConeSolver{
             case 'r2': return $this->z_ft * $this->tan2;
             case 'r3_ft': return $this->z_ft * $this->tan3;
             case 'r3': return $this->z_ft * $this->tan3;
-            case 'message':return ThreeConeSolver::statusString($this->status);
+            case 'message':return self::statusString($this->status);
         }
     }
     
@@ -66,9 +66,9 @@ class ThreeConeSolver{
         $this->z_ft = $this->_solveRecursive($guess_hi_ft, 0.5*($guess_hi_ft*$guess_low_ft), $guess_low_ft);
         if($this->z_ft < 0){
             $this->status = 404;
-        }else if($this->z_ft < ($guess_low_ft + 2*$this::epsilon)){
+        }else if($this->z_ft < ($guess_low_ft + 2*self::epsilon)){
             $this->status = 402;
-        }else if($this->z_ft > ($guess_hi_ft - 2*$this::epsilon)){
+        }else if($this->z_ft > ($guess_hi_ft - 2*self::epsilon)){
             $this->status = 401;
         }else{
             $this->status = 200;
@@ -84,7 +84,7 @@ class ThreeConeSolver{
         $epsilon = $h_ft - $l_ft;
         $m_ft = 0.5*($h_ft+$l_ft);
         //print sprintf("Loop %d,%d,%d :",$h_ft,$m_ft,$l_ft);
-        if($epsilon < $this::epsilon) return $m_ft;
+        if($epsilon < self::epsilon) return $m_ft;
         
         //calculate radii
         $r1_ft = $m_ft * $this->tan1;
@@ -97,11 +97,11 @@ class ThreeConeSolver{
         /*
         print sprintf(" validating %d,%d,%d for %d,%d,%d \n\t",$r1_ft,$r2_ft,$r3_ft,$d1_2,$d2_3,$d3_1);
         */
-        $valid = ThreeConeSolver::_radii_valid($r1_ft,$d1_2,$r2_ft,$d2_3,$r3_ft,$d3_1);
+        $valid = self::_radii_valid($r1_ft,$d1_2,$r2_ft,$d2_3,$r3_ft,$d3_1);
         //validate radii
         if(!$valid){
             //print sprintf("  Invalid radius %d,%d,%d\n",$r1_ft, $r2_ft, $r3_ft);
-            if($epsilon > 2*$this::epsilon){
+            if($epsilon > 2*self::epsilon){
                 return $this->_solveRecursive($h_ft, $m_ft);
             }else{
                 return -1;
