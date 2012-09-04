@@ -8,10 +8,33 @@ class ThreeConeSolver{
     protected $tan1;
     protected $tan2;
     protected $tan3;
-    protected $z_ft;
+    protected $z_ft = -1;
     public $status = 0;
-    const epsilon = 2;
     
+    const epsilon = .5;
+    const d_min = 50;
+    
+/*-----------------------PUBLIC STATIC FUNCTIONS-----------------------*/ 
+    
+    static function statusString($status){
+        switch($status){
+            case 0: return 'Not Started';
+            case 50: return 'In Progress';
+            case 100: return 'Bad Input';
+            case 200: return 'Success';
+            case 401: return 'Bad Guess -- Too Low';
+            case 402: return 'Bad Guess -- Too High';
+            case 404: return 'No Intersection';
+        }
+    }
+    
+    //no suffix indicates unit agnosticism
+    static function guessOK($hi,$lo){
+        return ($hi > 0) && ($lo > 0) && ($hi-$lo > self::epsilon);
+    }
+    
+/*---------------------RESTRICTED STATIC FUNCTIONS---------------------*/ 
+        
     protected static function _radii_valid($r1,$d1_2,$r2,$d2_3,$r3,$d3_1){
         // It is possible for 1 & 2 to intersect
         $flag1_2 = ($r1 + $r2 >= $d1_2) && ($r1 - $d1_2 <= $r2) && ($r2 - $d1_2 <= $r1);
@@ -22,18 +45,56 @@ class ThreeConeSolver{
         return $flag1_2 && $flag2_3 && $flag3_1;
     }
     
-    static function statusString($status){
-        switch($status){
-            case 0: return 'Incomplete';
-            case 100: return 'Bad Input';
-            case 200: return 'Success';
-            case 401: return 'Bad Guess -- Too Low';
-            case 402: return 'Bad Guess -- Too High';
-            case 404: return 'No Intersection';
+/*----------------------PUBLIC INSTANCE FUNCTIONS----------------------*/    
+    
+    /*
+     *    1      2      3
+     *    *<---->*<---->*
+     *       d      d
+     */
+
+    public function solve($d_ft, $theta1_deg, $theta2_deg, $theta3_deg, $guess_low_ft = 0, $guess_hi_ft = 1500){
+        print sprintf("solve: %d, [%d, %d, %d], [%d, %d]\n\n",$d_ft, $theta1_deg, $theta2_deg, $theta3_deg, $guess_low_ft, $guess_hi_ft);
+        //Ensure we have a clean solver object
+        if($this->status > 0) return $this->status;
+        
+        //Set status and assign variables
+        $this->status = 50;
+        $this->d_ft = $d_ft;
+        $this->th1_rad = deg2rad(90 - $theta1_deg);
+        $this->th2_rad = deg2rad(90 - $theta2_deg);
+        $this->th3_rad = deg2rad(90 - $theta3_deg);
+        
+        //Check our state
+        if(! (self::guessOK($guess_hi_ft,$guess_low_ft) && $this->valid())){
+            //return ($this->status = 100);
         }
+                    
+        //Calculations
+        $this->tan1 = tan($this->th1_rad);
+        $this->tan2 = tan($this->th2_rad);
+        $this->tan3 = tan($this->th3_rad);
+        //print sprintf("solve: [%d, %d, %d], [%d, %d]\n\n",$this->tan1, $this->tan2, $this->tan3, $guess_low_ft, $guess_hi_ft);
+        $this->z_ft = $this->_solveRecursive($guess_hi_ft, $guess_low_ft);
+        
+        //Check answers and return status
+        if($this->z_ft < 0){
+            $this->status = 404;
+        }else if($this->z_ft < ($guess_low_ft + 2*self::epsilon)){
+            $this->status = 402;
+        }else if($this->z_ft > ($guess_hi_ft - 2*self::epsilon)){
+            $this->status = 401;
+        }else{
+            $this->status = 200;
+        }
+        return $this->status;
     }
     
-    function __get($var){
+    public function ok(){
+        return $this->status == 200;
+    }
+    
+    public function __get($var){
         switch($var){
             case 'd_ft': return $this->d_ft;
             case 'd': return $this->d_ft;
@@ -49,42 +110,23 @@ class ThreeConeSolver{
         }
     }
     
-    /*
-     *    1      2      3
-     *    *<---->*<---->*
-     *       d      d
-     */
-
-    function solve($d_ft, $theta1_deg, $theta2_deg, $theta3_deg, $guess_low_ft = 0, $guess_hi_ft = 1500){
-        $this->d_ft = $d_ft;
-        $this->th1_rad = deg2rad(90 - $theta1_deg);
-        $this->tan1 = tan($this->th1_rad);
-        $this->th2_rad = deg2rad(90 - $theta2_deg);
-        $this->tan2 = tan($this->th2_rad);
-        $this->th3_rad = deg2rad(90 - $theta3_deg);
-        $this->tan3 = tan($this->th3_rad);
-        $this->z_ft = $this->_solveRecursive($guess_hi_ft, 0.5*($guess_hi_ft*$guess_low_ft), $guess_low_ft);
-        if($this->z_ft < 0){
-            $this->status = 404;
-        }else if($this->z_ft < ($guess_low_ft + 2*self::epsilon)){
-            $this->status = 402;
-        }else if($this->z_ft > ($guess_hi_ft - 2*self::epsilon)){
-            $this->status = 401;
-        }else{
-            $this->status = 200;
-        }
-        return $this->status;
+    public function valid(){
+        return true;
+        //Clearly all the angles can't be the same
+        if($this->th1_rad == $this->th2_rad && $this->th2_rad == $this->th3_rad) return false;
+        //Ensure d_ft is large enough
+        if($this->d_ft < self::d_max) return false;
+        
+        return true;
     }
     
-    function ok(){
-        return $this->status == 200;
-    }
+/*--------------------RESTRICTED INSTANCE FUNCTIONS--------------------*/
     
     protected function _solveRecursive($h_ft, $l_ft){
+        //print sprintf("solveRecursive: %d,%d  ",$h_ft,$l_ft);
         $epsilon = $h_ft - $l_ft;
         $m_ft = 0.5*($h_ft+$l_ft);
         //print sprintf("Loop %d,%d,%d :",$h_ft,$m_ft,$l_ft);
-        if($epsilon < self::epsilon) return $m_ft;
         
         //calculate radii
         $r1_ft = $m_ft * $this->tan1;
@@ -97,13 +139,13 @@ class ThreeConeSolver{
         /*
         print sprintf(" validating %d,%d,%d for %d,%d,%d \n\t",$r1_ft,$r2_ft,$r3_ft,$d1_2,$d2_3,$d3_1);
         */
-        $valid = self::_radii_valid($r1_ft,$d1_2,$r2_ft,$d2_3,$r3_ft,$d3_1);
-        //validate radii
-        if(!$valid){
-            //print sprintf("  Invalid radius %d,%d,%d\n",$r1_ft, $r2_ft, $r3_ft);
-            if($epsilon > 2*self::epsilon){
-                return $this->_solveRecursive($h_ft, $m_ft);
+        if($epsilon < self::epsilon){
+            //validate radii
+            $valid = self::_radii_valid($r1_ft,$d1_2,$r2_ft,$d2_3,$r3_ft,$d3_1);
+            if($valid){
+                return $m_ft;
             }else{
+                //print sprintf("  Invalid radius %d,%d,%d\n",$r1_ft, $r2_ft, $r3_ft);
                 return -1;
             }
         }

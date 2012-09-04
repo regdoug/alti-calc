@@ -1,6 +1,9 @@
 $(document).ready(function() {
 
     $('#alticalc-form').bind('submit',function () { 
+        //debug code: stop javascript execution.
+        if($('input[name=type]').val()=='plain') return true;
+        
         undrawCones($('#alticalc canvas.cones').get(0)); 
         $('#alticalc .entryerror').hide();    
         $('#alticalc .servererror').hide();
@@ -11,6 +14,8 @@ $(document).ready(function() {
         var a1 = $('input[name=angle-one]');
         var a2 = $('input[name=angle-two]');
         var a3 = $('input[name=angle-three]');
+        var g_lo = $('input[name=guess-lo]');
+        var g_hi = $('input[name=guess-hi]');
         
         if(this.checkValidity && !this.checkValidity()){
             $('#alticalc .entryerror').show(100);
@@ -38,6 +43,13 @@ $(document).ready(function() {
         
         var data = 'distance=' + d.val() + '&angle-one=' + a1.val() + 
         '&angle-two=' + a2.val() + '&angle-three='  + a3.val() + '&type=json';
+        
+        if (g_lo.val()!=''){
+            data += '&guess-lo='+g_lo.val();
+        }
+        if (g_hi.val()!=''){
+            data += '&guess-hi='+g_hi.val();
+        }
          
         //ajax callbacks
         var successFcn = function (jsonObj) {
