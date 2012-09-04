@@ -5,7 +5,7 @@ require_once('includes/three_cones.class');
 /*
  * CONSTANTS
  */
-const default_result_type = 'html';
+$default_result_type = 'html';
 
 /*
  * REQUIRED VARIABLES
@@ -33,7 +33,7 @@ $th3 = filter_var($th3,FILTER_VALIDATE_INT,array('min_range' => 1, 'max_range' =
  */
 $type = (isset($_REQUEST['type'])
         && preg_match('/[a-z]+/',$_REQUEST['type']))
-        ?$_REQUEST['type']:default_result_type;
+        ?$_REQUEST['type']:$default_result_type;
 
 $guess_lo = isset($_REQUEST['guess-lo'])?$_REQUEST['guess-lo']:0;
 $guess_hi = isset($_REQUEST['guess-hi'])?$_REQUEST['guess-hi']:0;
