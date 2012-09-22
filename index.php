@@ -1,30 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<title>Rocket Altitude Calculator</title>
-	<link rel="stylesheet" type="text/css" href="resources/styles/boilerplate.css" />
-	<link rel="stylesheet" type="text/css" href="resources/styles/style.css" />
-	<script src="resources/js/jquery.js"></script>
-	<script src="resources/js/formajax.js"></script>
-	<script src="resources/js/AltiCalcDraw.js"></script>
-	<!--[if IE]>
-		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-</head>
-
-<body id="home">
-  <section class="toplevel" id="alticalc">
-	<a href="https://github.com/regdoug/alti-calc">
-		<img class="github-banner" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub">
-	</a>
-	<hgroup class="title">
-		<h1>Rocket Altitude Calculator</h1>
-		<h2>A quick and dirty altitude calculator for three Alti Traks</h2>
-	</hgroup>
+<?php require_once 'content/header.html.php'; ?>
 	
 	<section class="about">
 	<h1>About this Calculator</h1>
+	Read about the theory of this calculator <a href="theory.php">here.</a>
+	
 	<h2>Measurement Requirements</h2>
 	You need three trackers with an Alti Trak each (or protractors w/ string)
 	arranged in a straight line with equal distances between each.  See
@@ -84,7 +63,5 @@
 		<canvas class="cones" width='500' height='300'></canvas>
 	</div>
 	</section>
-	
-  </section>
-</body>
-</html>
+
+<?php require_once 'content/footer.html.php'; ?>

@@ -1,0 +1,75 @@
+<h1>About the AltiCalc Calculator</h1>
+<h2>Altitude Tracking</h2>
+<p class="para">/*Describe AltiTrak w/o using the word AlitTrak?*/
+ You can use this angle to estimate the height of the rocket by
+assuming that the rocket went straight up into the sky.  This isn't a
+particularly bad assumption, but in windy weather, you could be off
+by a significant amount.</p>
+<p class="para">To correct for this
+inaccuracy, you need to get more information about the rocket's
+trajectory.  One of the most common methods of tracking rockets is by
+using two theodolites.  A theodolite not only measures the angle
+above the horizon (the altitude angle), but also the angle the rocket
+has moved horizontally (the azimuth angle).  With two theodolites,
+you can determine the final altitude with very good accuracy.</p>
+<p class="para">The problem with
+theodolites is that they are more expensive than AltiTraks and it is
+much easier to make your own AltiTrak-like device that it is to make
+your own theodolite.  Simply tape a weighted string to a protractor
+and you have a crude device to measure altitude angle.  AltiCalc
+provides a way to track rockets accurately with only altitude angle
+measurements.</p>
+<h2>The Theory Behind AltiCalc</h2>
+<p class="para">Again consider the lone
+person with an AltiTrak.  Imagine an infinite ray stretching out of
+the tracking device towards the rocket.  This represents the locus of
+points that the rocket could occupy given only that the tracker has
+it in their sights.  Since we don't know the azimuth angle in which
+the tracker is facing, this ray could point in any direction as long
+as it has the same altitude angle.  This forms a 
+<a href="http://en.wikipedia.org/wiki/Cone#Right_circular_cone" 
+title="Right Circular Cone (Wikipedia)">right cone</a> around the
+tracker. [show gif]</p>
+<p class="para">The AltiCalc program
+takes advantage of the fact that right cones aligned on parallel axes
+will intersect.  More specifically, given three non-colinear right
+cones whose their apexes are on the xy-plane and whose axes are
+parallel to the z-axis, the only intersections of all three cones
+will be at a unique z-value.  The equations involved in this method
+cannot be solved analytically, so a numerical solver is used instead.</p>
+<p class="para">The
+solver works as follows:  
+</p>
+<ol class="list">
+	<li>A z-value guess is selected<a class="footnotelink" name="footnote1src" href="#footnote1"><sup>1</sup></a></li>
+	<li>The cones are sliced at that height to yield three circles [add
+	example]
+	<li>The x-value of the intersections between cones 1 &amp; 2 and cones 1
+	&amp; 3 are computed.  (If the intersections don't exist, nothing is
+	computed)</li>
+	<li>If the intersection of 1 &amp; 2 is to the left of cones 1 &amp; 3,
+	a bigger guess is selected.  If it is to the right, a smaller guess
+	is selected.</li>
+	<li>This process continues until either</li>
+	<ol class="list loweralpha">
+		<li>The intersection of cones 1 &amp; 2 is at the same 
+		place<a class="footnotelink" name="footnote2src" href="#footnote2"><sup>2</sup></a>
+		as cones 1 &amp; 3</li>
+		<li>The guesses get too close to the edges of the allowable range of
+		guesses.</li>
+	</ol>
+</ol>
+<h2>Assumptions</h2>
+<ul class="list">
+	<li>The elevation of each tracking device is at	the same elevation as the launch pad.</li>
+	<li>The x-y plane is defined as this elevation,	with z directed upward</li>
+	<li>The trackers are arranged along the x-axis.</li>
+</ul>
+
+<aside>
+	<p class="footnote"><a name="footnote1" href="#footnote1src">1</a>Guesses
+	are selected acording to the <a href="http://en.wikipedia.org/wiki/Bisection_method" 
+	title="Bisection Method (Wikipedia)">bisection method.</a></p>
+	<p class="footnote"><a name="footnote2" href="#footnote2src">2</a>The
+	solver uses within 6&quot; to determine &quot;same place&quot;</p>
+</aside>
